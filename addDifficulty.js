@@ -35,23 +35,24 @@ connection.query('SELECT * FROM Quotes', function (err, rows, fields) {
 		    difTotal += 1;
 		}
 		else if(easyCharsUp.indexOf(ch) != -1){
-		    difTotal += 1.5;
-		}
-		else if(harderChars.indexOf(ch) != -1){
 		    difTotal += 2;
 		}
+		else if(harderChars.indexOf(ch) != -1){
+		    difTotal += 4;
+		}
 		else if(harderCharsUp.indexOf(ch) != -1){
-		    difTotal += 2.5;
+		    difTotal += 6;
 		}
 		else if(hardestChars.indexOf(ch) != -1){
-		    difTotal += 3;
+		    difTotal += 8;
 				}
 		else if(hardestCharsUp.indexOf(ch) != -1){
-		    difTotal += 3.5;
+		    difTotal += 10;
 		}
 	    }
 	    var difficulty = "";
-	    if(difTotal <= 100){
+	    console.log(difTotal);
+	    if(difTotal <= 200){
 		difficulty = "'easy'";
 	    }
 	    else if(difTotal < 400){
