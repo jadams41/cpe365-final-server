@@ -11,7 +11,6 @@ connection.connect();
 
 http.createServer(function(req, res) {    
     console.log(req.method);
-    //console.log(req.data);
 
     if(req.method == 'GET') {
 	console.log(req.url);
@@ -42,12 +41,32 @@ http.createServer(function(req, res) {
 	    }
 	}
 	else if(req.url.toString().indexOf('/quote') != -1) {
-	    var queryStr = 'SELECT quote, author, difficulty FROM Quotes ORDER BY RAND() LIMIT 1';
+	    var queryStr = 'SELECT quote, author, difficulty, id FROM Quotes ORDER BY RAND() LIMIT 1';
 	    var idx = 0;
+	    var diff = undefined, not = undefined;
+
 	    if((idx = req.url.toString().indexOf('?difficulty=')) != -1){
-		var diff = req.url.toString().substring(idx + 12);
-		queryStr = 'SELECT quote, author, difficulty FROM Quotes WHERE difficulty = ' + connection.escape(diff) + ' ORDER BY RAND() LIMIT 1';
+		var index = req.url.toString().indexOf("&");
+		if(index == -1) index = req.url.toString.length;
+		diff = req.url.toString().substring(idx + 12, index);
 	    }
+	    if((idx=req.url.toString().indexOf('&not=')) != -1){
+		not = req.url.toString().substring(idx + 5);
+	    }
+
+	    queryStr = 'SELECT quote, author, difficulty, id FROM Quotes ';
+	    if( diff || not){
+		queryStr += "WHERE ";
+		if(diff){
+		    queryStr += 'difficulty = ' + connection.escape(diff);
+		    if(not) queryStr += ' AND ';
+		}
+		if(not){
+		    queryStr += 'id != ' + connection.escape(not);
+		}
+	    }
+	    queryStr += ' ORDER BY RAND() LIMIT 1';
+	    console.log(queryStr);
 	    connection.query(queryStr, function (err, rows, fields) {
 		if (err) {
 		    console.log(err);
